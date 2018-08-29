@@ -5,7 +5,7 @@ interface Person {
 
 class Student implements Person {
   fullname: string;
-  constructor(public firstName, public lastName) {
+  constructor(public firstName: string, public lastName: string) {
     this.fullname = firstName + " " + lastName;
   }
 }
