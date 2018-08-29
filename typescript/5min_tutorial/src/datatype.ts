@@ -11,16 +11,16 @@ interface Person {
   lastName: string;
 }
 
-class Student implements Person {
+class Teacher implements Person {
   fullname: string;
   constructor(public firstName: string, public lastName: string) {
     this.fullname = firstName + " " + lastName;
   }
 }
 
-let users: Array<Student> = [];
-users.push(new Student("Jane", "Gould"));
-users.push(new Student("George", "Mitchell"));
+let users: Array<Teacher> = [];
+users.push(new Teacher("Jane", "Gould"));
+users.push(new Teacher("George", "Mitchell"));
 console.log(users.map(u => u.fullname).join(" <=> "));
 
 /** Enum **/
