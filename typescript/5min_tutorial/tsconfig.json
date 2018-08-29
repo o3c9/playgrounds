@@ -4,8 +4,10 @@
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "outFile": "./dist/app.js",
-        "sourceMap": true
+        "outDir": "dist",
+        // "outFile": "./dist/app.js",
+        "sourceMap": true,
+        "target": "es2015"
     },
     "include": [
         "src/**/*"
