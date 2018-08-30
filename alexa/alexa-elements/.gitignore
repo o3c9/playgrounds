@@ -1,4 +1,4 @@
-lambda/custom/node_modules/
+node_modules/
 built/*
 tests/cases/rwc/*
 tests/cases/test262/*
@@ -76,4 +76,4 @@ tests/baselines/reference/dt
 .failed-tests
 TEST-results.xml
 package-lock.
-dist/
+lambda/custom/

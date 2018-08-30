@@ -1,0 +1,32 @@
+{
+  "name": "alexa-elements",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "o3c9",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "ask-sdk": "^2.0.7",
+    "ask-sdk-dynamodb-persistence-adapter": "^2.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "^10.9.4",
+    "@types/webpack": "^4.4.11",
+    "@types/webpack-node-externals": "^1.6.3",
+    "pjson": "^1.0.9",
+    "ts-loader": "^4.5.0",
+    "ts-node": "^7.0.1",
+    "tslint-config-airbnb": "^5.10.0",
+    "typescript": "^3.0.3",
+    "webpack": "^4.17.1",
+    "webpack-cli": "^3.1.0",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.ts",
+    "pjson": "ts-node ./tools/gen-package-json.ts > ./lambda/custom/package.json",
+    "test": "jest",
+    "lint": "tslint src/**/*.ts",
+    "clean": "rm -rf ./lambda/custom/*"
+  }
+}

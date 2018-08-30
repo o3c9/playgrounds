@@ -3,14 +3,14 @@
     "publishingInformation": {
       "locales": {
         "ja-JP": {
-          "name": "First Skill"
+          "name": "elements"
         }
       }
     },
     "apis": {
       "custom": {
         "endpoint": {
-          "sourceDir": "./lambda/us-east-1_alexaElements"
+          "sourceDir": "./lambda/custom"
         },
         "interfaces": []
       }

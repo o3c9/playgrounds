@@ -16,7 +16,7 @@ import {
   PartitionKeyGenerators
 } from "ask-sdk-dynamodb-persistence-adapter";
 
-import elements from "../data/elements";
+import elements from "./elements";
 
 const LaunchRequestHandler: RequestHandler = {
   canHandle(handlerInput: HandlerInput): boolean {
@@ -69,7 +69,8 @@ const ReadIntentHandler: RequestHandler = {
 
 const PersistentAttributesRequestInterceptor: RequestInterceptor = {
   async process(handlerInput: HandlerInput): Promise<void> {
-    if (handlerInput.requestEnvelope.session.new == true) {
+    const session = handlerInput.requestEnvelope.session;
+    if (session && session.new == true) {
       const attr = await handlerInput.attributesManager.getPersistentAttributes();
       const callNum = attr.callNum ? attr.callNum : 0;
       attr.callNum = callNum + 1;
@@ -98,8 +99,10 @@ const ErrorHandler: ErrorHandler = {
   }
 };
 
+const tableName = process.env.DYNAMODB_TABLE_NAME || "AlexaElementsSessions";
+
 const dynamoAdapter = new DynamoDbPersistenceAdapter({
-  tableName: process.env.DYNAMODB_TABLE_NAME,
+  tableName: tableName,
   partitionKeyGenerator: PartitionKeyGenerators.userId
 });
 

@@ -1,0 +1,6 @@
+{
+  "extends": "tslint-config-airbnb",
+  "exclude": [
+    "node_modules"
+  ]
+}
