@@ -11,6 +11,8 @@ import {
 
 import { Response, SessionEndedRequest } from "ask-sdk-model";
 
+import { DynamoDB } from "aws-sdk";
+
 import {
   DynamoDbPersistenceAdapter,
   PartitionKeyGenerators
@@ -103,7 +105,8 @@ const tableName = process.env.DYNAMODB_TABLE_NAME || "AlexaElementsSessions";
 
 const dynamoAdapter = new DynamoDbPersistenceAdapter({
   tableName: tableName,
-  partitionKeyGenerator: PartitionKeyGenerators.userId
+  partitionKeyGenerator: PartitionKeyGenerators.userId,
+  dynamoDBClient: new DynamoDB({ apiVersion: "latest", region: "us-east-1" })
 });
 
 exports.handler = SkillBuilders.custom()
