@@ -1,0 +1,49 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "エレメンツ",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": [
+            "さようなら"
+          ]
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": [
+            "ヘルプです"
+          ]
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": [
+            "ストップです"
+          ]
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": [
+            "ホームに戻るです"
+          ]
+        },
+        {
+          "name": "HelloWorldIntent",
+          "samples": [
+            "say hello world",
+            "hi",
+            "how are you",
+            "ハローワールド"
+          ]
+        },
+        {
+          "name": "ReadIntent",
+          "samples": [
+            "全部言って",
+            "読み上げて"
+          ]
+        }
+      ]
+    }
+  }
+}
