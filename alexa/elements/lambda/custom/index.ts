@@ -5,7 +5,8 @@ import {
   HandlerInput,
   RequestHandler,
   SkillBuilders,
-  RequestInterceptor
+  RequestInterceptor,
+  ResponseInterceptor
 } from "ask-sdk-core";
 
 import { Response, SessionEndedRequest } from "ask-sdk-model";
@@ -77,7 +78,7 @@ const PersistentAttributesRequestInterceptor: RequestInterceptor = {
   }
 };
 
-const PersistentAttributesResponseInterceptor: RequestInterceptor = {
+const PersistentAttributesResponseInterceptor: ResponseInterceptor = {
   async process(handlerInput: HandlerInput): Promise<void> {
     await handlerInput.attributesManager.savePersistentAttributes();
   }
@@ -97,9 +98,8 @@ const ErrorHandler: ErrorHandler = {
   }
 };
 
-const persistenceAdapter = new DynamoDbPersistenceAdapter({
+const dynamoAdapter = new DynamoDbPersistenceAdapter({
   tableName: process.env.DYNAMODB_TABLE_NAME,
-  partitionKeyName: process.env.PARTITION_KEY_NAME,
   partitionKeyGenerator: PartitionKeyGenerators.userId
 });
 
@@ -111,6 +111,6 @@ exports.handler = SkillBuilders.custom()
   )
   .addRequestInterceptors(PersistentAttributesRequestInterceptor)
   .addResponseInterceptors(PersistentAttributesResponseInterceptor)
+  .withPersistenceAdapter(dynamoAdapter)
   .addErrorHandlers(ErrorHandler)
-  .withPersistenceAdapter(persistenceAdapter)
   .lambda();
