@@ -7,25 +7,24 @@ const config: webpack.Configuration = {
   mode: "development",
   target: "node",
   externals: [webpackNodeExternals()],
-  devtool: "inline-source-map",
   module: {
     rules: [
       {
         test: /\.tsx?$/,
         use: "ts-loader",
-        exclude: /node_modules/,
-      },
-    ],
+        exclude: /node_modules/
+      }
+    ]
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: [".tsx", ".ts", ".js"]
   },
   output: {
     filename: "index.js",
     path: path.resolve(__dirname, "lambda/custom"),
     library: "index",
-    libraryTarget: "commonjs2",
-  },
+    libraryTarget: "commonjs2"
+  }
 };
 
 export default config;

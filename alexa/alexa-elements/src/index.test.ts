@@ -1,11 +1,14 @@
-import { VirtualAlexa } from "virtual-alexa";
+import { VirtualAlexa, DynamoDB } from "virtual-alexa";
 
 import { handler } from "./index";
 
-describe("helloworld skill", () => {
+describe("Elements", () => {
   let alexa: VirtualAlexa;
+  let mockDynamo: DynamoDB;
 
   beforeEach(() => {
+    mockDynamo = new DynamoDB();
+    mockDynamo.mock();
     alexa = VirtualAlexa.Builder()
       .handler(handler)
       .interactionModelFile("./models/ja-JP.json")
