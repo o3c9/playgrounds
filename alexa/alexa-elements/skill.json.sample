@@ -1,0 +1,50 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "ja-JP": {
+          "summary": "周期表をマスターして、元素をすべて暗記できるようになりましょう！",
+          "examplePhrases": [
+            "アレクサ、周期表マスターを開いて"
+          ],
+          "keywords": [
+            "周期表",
+            "元素",
+            "科学",
+            "暗記",
+            "受験",
+            "元素記号",
+            "水素",
+            "酸素",
+            "化学",
+            "勉強"
+          ],
+          "name": "周期表マスター",
+          "smallIconUri": "<image.jpg>",
+          "description": "周期表をマスターして、元素をすべて暗記できるようになりましょう。現在発見されているすべての元素記号をそらんじることができるように全力でサポートします。",
+          "largeIconUri": "<image_large.jpg>"
+        }
+      },
+      "isAvailableWorldwide": true,
+      "testingInstructions": "周期表で、第一番目の元素を教えて",
+      "category": "EDUCATION_AND_REFERENCE",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "<arn:aws:lambda>"
+        },
+        "interfaces": []
+      }
+    },
+    "manifestVersion": "1.0",
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "isExportCompliant": true,
+      "containsAds": false,
+      "isChildDirected": false,
+      "usesPersonalInfo": false
+    }
+  }
+}

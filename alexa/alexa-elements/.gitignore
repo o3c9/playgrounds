@@ -77,3 +77,4 @@ tests/baselines/reference/dt
 TEST-results.xml
 package-lock.
 lambda/custom/
+skill.json
