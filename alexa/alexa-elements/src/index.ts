@@ -9,7 +9,12 @@ import {
   ResponseInterceptor
 } from "ask-sdk-core";
 
-import { Response, IntentRequest, Slot } from "ask-sdk-model";
+import {
+  Response,
+  IntentRequest,
+  Slot,
+  SessionEndedRequest
+} from "ask-sdk-model";
 
 import { DynamoDB, Request } from "aws-sdk";
 
@@ -61,12 +66,35 @@ const ReadOneIntentHandler: RequestHandler = {
   handle(handlerInput: HandlerInput): Response {
     const req = handlerInput.requestEnvelope.request as IntentRequest;
     const idx = getIndex(req.intent.slots);
+    let speechText;
+    if (idx >= 0) {
+      speechText = `${elements[idx].name.ja}だよ`;
+    } else {
+      let slots = req.intent.slots || {};
+      let debug = [];
+      for (let key in slots) {
+        debug.push(`${key} => ${slots[key].value}`);
+      }
+      console.log(`slots: ${debug.join(", ")}`);
+      speechText = `${idx}番目の元素は見つかりませんでした`;
+    }
 
-    const speechText = `${elements[idx].name.ja}だよ`;
     return handlerInput.responseBuilder
       .speak(speechText)
       .withSimpleCard("elements", speechText)
       .getResponse();
+  }
+};
+
+const SessionEndedRequestHandler: RequestHandler = {
+  canHandle(handlerInput: HandlerInput): boolean {
+    return handlerInput.requestEnvelope.request.type === "SessionEndedRequest";
+  },
+  handle(handlerInput: HandlerInput): Response {
+    const req = handlerInput.requestEnvelope.request as SessionEndedRequest;
+    console.log(`Session ended with reason: ${req.reason}`);
+
+    return handlerInput.responseBuilder.getResponse();
   }
 };
 
@@ -93,12 +121,12 @@ const ErrorHandler: ErrorHandler = {
     return true;
   },
   handle(handlerInput: HandlerInput, error: Error): Response {
-    console.log(`エラー: ${error.message}`);
+    console.log(`ERROR: ${error.message}`);
 
     return handlerInput.responseBuilder
-      .speak("ごめんなさい、もう一度言い直してください")
+      .speak("うぎゃ、エラーが発生しました。ログを確認してください")
       .reprompt("ごめんなさい、もう一度言い直してください")
-      .withSimpleCard("エラー", error.message)
+      .withSimpleCard("ERROR", error.message)
       .getResponse();
   }
 };
@@ -115,7 +143,8 @@ exports.handler = SkillBuilders.custom()
   .addRequestHandlers(
     LaunchRequestHandler,
     ReadAllIntentHandler,
-    ReadOneIntentHandler
+    ReadOneIntentHandler,
+    SessionEndedRequestHandler
   )
   .addRequestInterceptors(PersistentAttributesRequestInterceptor)
   .addResponseInterceptors(PersistentAttributesResponseInterceptor)
