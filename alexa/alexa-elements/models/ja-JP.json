@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "エレメンツ",
+      "invocationName": "周期表",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
@@ -28,19 +28,24 @@
           ]
         },
         {
-          "name": "HelloWorldIntent",
-          "samples": [
-            "say hello world",
-            "hi",
-            "how are you",
-            "ハローワールド"
-          ]
-        },
-        {
-          "name": "ReadIntent",
+          "name": "ReadAllIntent",
           "samples": [
             "全部言って",
             "読み上げて"
+          ]
+        },
+        {
+          "name": "ReadOneIntent",
+          "slots": [
+            {
+              "name": "ordinary",
+              "type": "AMAZON.NUMBER"
+            }
+          ],
+          "samples": [
+            "元素番号 {ordinary}",
+            "第 {ordinary} 番目の元素",
+            "{ordinary} 番目の元素"
           ]
         }
       ]

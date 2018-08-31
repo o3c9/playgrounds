@@ -9,9 +9,9 @@ import {
   ResponseInterceptor
 } from "ask-sdk-core";
 
-import { Response, SessionEndedRequest } from "ask-sdk-model";
+import { Response, IntentRequest, Slot } from "ask-sdk-model";
 
-import { DynamoDB } from "aws-sdk";
+import { DynamoDB, Request } from "aws-sdk";
 
 import {
   DynamoDbPersistenceAdapter,
@@ -19,6 +19,7 @@ import {
 } from "ask-sdk-dynamodb-persistence-adapter";
 
 import elements from "./elements";
+import { getIndex } from "./utils";
 
 const LaunchRequestHandler: RequestHandler = {
   canHandle(handlerInput: HandlerInput): boolean {
@@ -34,27 +35,11 @@ const LaunchRequestHandler: RequestHandler = {
   }
 };
 
-const HelloElementsIntentHandler: RequestHandler = {
+const ReadAllIntentHandler: RequestHandler = {
   canHandle(handlerInput: HandlerInput): boolean {
     return (
       handlerInput.requestEnvelope.request.type === "IntentRequest" &&
-      handlerInput.requestEnvelope.request.intent.name === "HelloWorldIntent"
-    );
-  },
-  handle(handlerInput: HandlerInput): Response {
-    const speechText = "水素・ヘリウム・リチウム・ベリリウム！";
-    return handlerInput.responseBuilder
-      .speak(speechText)
-      .withSimpleCard("elements", speechText)
-      .getResponse();
-  }
-};
-
-const ReadIntentHandler: RequestHandler = {
-  canHandle(handlerInput: HandlerInput): boolean {
-    return (
-      handlerInput.requestEnvelope.request.type === "IntentRequest" &&
-      handlerInput.requestEnvelope.request.intent.name === "ReadIntent"
+      handlerInput.requestEnvelope.request.intent.name === "ReadAllIntent"
     );
   },
   handle(handlerInput: HandlerInput): Response {
@@ -62,6 +47,27 @@ const ReadIntentHandler: RequestHandler = {
       .slice(0, 36)
       .map(elm => elm.name.ja)
       .join(", ");
+    return handlerInput.responseBuilder
+      .speak(speechText)
+      .withSimpleCard("elements", speechText)
+      .withShouldEndSession(true)
+      .getResponse();
+  }
+};
+
+const ReadOneIntentHandler: RequestHandler = {
+  canHandle(handlerInput: HandlerInput): boolean {
+    return (
+      handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      handlerInput.requestEnvelope.request.intent.name === "ReadOneIntent"
+    );
+  },
+  handle(handlerInput: HandlerInput): Response {
+    const req = handlerInput.requestEnvelope.request;
+    const slots = req.intent.slots;
+    const idx = getIndex(slots);
+
+    const speechText = `${elements[idx].name.ja}だよ`;
     return handlerInput.responseBuilder
       .speak(speechText)
       .withSimpleCard("elements", speechText)
@@ -97,6 +103,7 @@ const ErrorHandler: ErrorHandler = {
     return handlerInput.responseBuilder
       .speak("ごめんなさい、もう一度言い直してください")
       .reprompt("ごめんなさい、もう一度言い直してください")
+      .withSimpleCard("エラー", error.message)
       .getResponse();
   }
 };
@@ -112,8 +119,8 @@ const dynamoAdapter = new DynamoDbPersistenceAdapter({
 exports.handler = SkillBuilders.custom()
   .addRequestHandlers(
     LaunchRequestHandler,
-    HelloElementsIntentHandler,
-    ReadIntentHandler
+    ReadAllIntentHandler,
+    ReadOneIntentHandler
   )
   .addRequestInterceptors(PersistentAttributesRequestInterceptor)
   .addResponseInterceptors(PersistentAttributesResponseInterceptor)
