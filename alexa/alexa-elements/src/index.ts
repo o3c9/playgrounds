@@ -68,7 +68,8 @@ const ReadOneIntentHandler: RequestHandler = {
     const idx = getIndex(req.intent.slots);
     let speechText;
     if (idx >= 0) {
-      speechText = `${elements[idx].name.ja}だよ`;
+      const element = elements[idx];
+      speechText = `${element.id}番目の元素は${element.name.ja}だよ`;
     } else {
       let slots = req.intent.slots || {};
       let debug = [];
@@ -76,7 +77,7 @@ const ReadOneIntentHandler: RequestHandler = {
         debug.push(`${key} => ${slots[key].value}`);
       }
       console.log(`slots: ${debug.join(", ")}`);
-      speechText = `${idx}番目の元素は見つかりませんでした`;
+      speechText = `ごめんなさい、よく聞き取れませんでした。もう一度言い直してください。`;
     }
 
     return handlerInput.responseBuilder
@@ -95,6 +96,23 @@ const SessionEndedRequestHandler: RequestHandler = {
     console.log(`Session ended with reason: ${req.reason}`);
 
     return handlerInput.responseBuilder.getResponse();
+  }
+};
+
+const StopIntentRequestHandler: RequestHandler = {
+  canHandle(handlerInput: HandlerInput): boolean {
+    const req = handlerInput.requestEnvelope.request;
+    return (
+      req.type === "IntentRequest" &&
+      (req.intent.name === "AMAZON.StopIntent" ||
+        req.intent.name === "AMAZON.CancelIntent")
+    );
+  },
+  handle(handlerInput: HandlerInput): Response {
+    return handlerInput.responseBuilder
+      .addAudioPlayerStopDirective()
+      .withShouldEndSession(true)
+      .getResponse();
   }
 };
 
@@ -144,6 +162,7 @@ exports.handler = SkillBuilders.custom()
     LaunchRequestHandler,
     ReadAllIntentHandler,
     ReadOneIntentHandler,
+    StopIntentRequestHandler,
     SessionEndedRequestHandler
   )
   .addRequestInterceptors(PersistentAttributesRequestInterceptor)

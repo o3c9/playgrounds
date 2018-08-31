@@ -24,11 +24,13 @@ describe("Elements", () => {
 
   it("ReadOneIntent", async () => {
     const payload1 = (await alexa.utter("1 番目の元素")) as SkillResponse;
-    expect(payload1.response.outputSpeech.ssml).toContain("水素");
+    expect(payload1.response.outputSpeech.ssml).toContain("1番目の元素は水素");
     expect(payload1.response.shouldEndSession).toBeFalsy();
 
     const payload2 = (await alexa.utter("2 番目の元素")) as SkillResponse;
-    expect(payload2.response.outputSpeech.ssml).toContain("ヘリウム");
+    expect(payload2.response.outputSpeech.ssml).toContain(
+      "2番目の元素はヘリウム"
+    );
     expect(payload2.response.shouldEndSession).toBeFalsy();
   });
 
@@ -37,6 +39,16 @@ describe("Elements", () => {
     expect(payload1.response.outputSpeech.ssml).toContain(
       "水素, ヘリウム, リチウム, ベリリウム"
     );
+    expect(payload1.response.shouldEndSession).toBeTruthy();
+  });
+
+  it("StopIntent", async () => {
+    const payload1 = (await alexa.utter("ストップ")) as SkillResponse;
+    expect(payload1.response.shouldEndSession).toBeTruthy();
+  });
+
+  it("CancelIntent", async () => {
+    const payload1 = (await alexa.utter("キャンセルして")) as SkillResponse;
     expect(payload1.response.shouldEndSession).toBeTruthy();
   });
 });
