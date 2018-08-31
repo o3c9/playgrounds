@@ -37,10 +37,8 @@ const LaunchRequestHandler: RequestHandler = {
 
 const ReadAllIntentHandler: RequestHandler = {
   canHandle(handlerInput: HandlerInput): boolean {
-    return (
-      handlerInput.requestEnvelope.request.type === "IntentRequest" &&
-      handlerInput.requestEnvelope.request.intent.name === "ReadAllIntent"
-    );
+    const req = handlerInput.requestEnvelope.request;
+    return req.type === "IntentRequest" && req.intent.name === "ReadAllIntent";
   },
   handle(handlerInput: HandlerInput): Response {
     const speechText = elements
@@ -57,15 +55,12 @@ const ReadAllIntentHandler: RequestHandler = {
 
 const ReadOneIntentHandler: RequestHandler = {
   canHandle(handlerInput: HandlerInput): boolean {
-    return (
-      handlerInput.requestEnvelope.request.type === "IntentRequest" &&
-      handlerInput.requestEnvelope.request.intent.name === "ReadOneIntent"
-    );
+    const req = handlerInput.requestEnvelope.request;
+    return req.type === "IntentRequest" && req.intent.name === "ReadOneIntent";
   },
   handle(handlerInput: HandlerInput): Response {
-    const req = handlerInput.requestEnvelope.request;
-    const slots = req.intent.slots;
-    const idx = getIndex(slots);
+    const req = handlerInput.requestEnvelope.request as IntentRequest;
+    const idx = getIndex(req.intent.slots);
 
     const speechText = `${elements[idx].name.ja}だよ`;
     return handlerInput.responseBuilder
