@@ -10,3 +10,4 @@ nn = TwoLayerNet(2, 4, 3)
 print(nn.predict(X))
 
 print(nn.params)
+
