@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class Softmax:
+class SoftmaxWithLoss:
     def __init__(self):
         self.params = []
 
