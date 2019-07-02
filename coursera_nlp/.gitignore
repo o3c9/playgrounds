@@ -5,3 +5,7 @@ __pycache__/
 
 *.bin.gz
 *.pkl
+*.pickle
+*.sqlite3
+
+.env

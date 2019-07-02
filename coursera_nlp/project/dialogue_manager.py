@@ -29,7 +29,7 @@ class ThreadRanker(object):
         question_vec = question_to_vec(
             question, self.word_embeddings, self.embeddings_dim).reshape(1, -1)
         best_thread = pairwise_distances_argmin(
-            question_vec, thread_embeddings)
+            question_vec, thread_embeddings, metric='cosine')[0]
 
         return thread_ids[best_thread]
 
@@ -89,6 +89,6 @@ class DialogueManager(object):
             tag = self.tag_classifier.predict(features)[0]
 
             # Pass prepared_question to thread_ranker to get predictions.
-            thread_id = self.thread_ranker.get_best_thread(question, tag)[0]
+            thread_id = self.thread_ranker.get_best_thread(question, tag)
 
             return self.ANSWER_TEMPLATE % (tag, thread_id)
