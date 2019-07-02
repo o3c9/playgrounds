@@ -50,7 +50,7 @@ def load_embeddings(embeddings_path):
     ########################
     dim = 100
     starspace_embeddings = dict()
-    with open('data/starSpace.bin.tsv', 'r', encoding='utf-8') as input:
+    with open(embeddings_path, 'r', encoding='utf-8') as input:
         for line in input:
             q, *ex = line.strip().split('\t')
             starspace_embeddings[q] = np.asarray(ex, dtype=float)
