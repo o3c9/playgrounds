@@ -2,25 +2,25 @@
 
 int main(void)
 {
-    int     hoge = 5;
-    int     piyo = 10;
-    int     *hoge_p;
+    int v1 = 5;
+    int v2 = 10;
+    int *v1_p;
 
     /* それぞれの変数のアドレスを表示する */
-    printf("&hoge..%p\n", (void*)&hoge);
-    printf("&piyo..%p\n", (void*)&piyo);
-    printf("&hoge_p..%p\n", (void*)&hoge_p);
+    printf("&v1..%p\n", (void *)&v1);
+    // printf("&v2..%p\n", (void *)&v2);
+    printf("&v1_p..%p\n", (void *)&v1_p);
 
-    /* ポインタ変数hoge_pにhogeのアドレスを代入する */
-    hoge_p = &hoge;
-    printf("hoge_p..%p\n", (void*)hoge_p);
+    /* ポインタ変数v1_pにhogeのアドレスを代入する */
+    v1_p = &v1;
+    printf("v1_p..%p\n", (void *)v1_p);
 
-    /* hoge_pを経由してhogeの値を表示する */
-    printf("*hoge_p..%d\n", *hoge_p);
+    /* v1_pを経由してhogeの値を表示する */
+    printf("*v1_p..%d\n", *v1_p);
 
-    /* hoge_pを経由してhogeの値を変更する */
-    *hoge_p = 10;
-    printf("hoge..%d\n", hoge);
+    /* v1_pを経由してhogeの値を変更する */
+    *v1_p = 10;
+    printf("v1..%d\n", v1);
 
     return 0;
 }
