@@ -10,10 +10,10 @@ int main()
     {
         printf("[%d] %s\n", ln, line);
         ln++;
-        if (ln > 3)
-            break;
+        free(line);
+        line = NULL;
+
+        printf("line after freed: %s\n", line);
     }
     free_buffer();
-
-    printf("line after freed: %s\n", line);
 }
