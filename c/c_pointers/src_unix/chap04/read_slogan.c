@@ -8,16 +8,18 @@ void read_slogan(FILE *fp, char **slogan)
 {
     char buf[1024];
     int slogan_len;
-    int  i;
+    int i;
 
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < 7; i++)
+    {
         fgets(buf, SLOGAN_MAX_LEN, fp);
 
-	slogan_len = strlen(buf);
-	if (buf[slogan_len - 1] != '\n') {
-	    fprintf(stderr, "標語が長過ぎます。\n");
-	    exit(1);
-	}
+        slogan_len = strlen(buf);
+        if (buf[slogan_len - 1] != '\n')
+        {
+            fprintf(stderr, "標語が長過ぎます。\n");
+            exit(1);
+        }
         /* 改行文字を削除 */
         buf[slogan_len - 1] = '\0';
 
@@ -37,8 +39,10 @@ int main(void)
     read_slogan(stdin, slogan);
 
     /* 読み込んだ標語を表示する */
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < 7; i++)
+    {
         printf("%s\n", slogan[i]);
+        free(slogan[o]);
     }
 
     return 0;
