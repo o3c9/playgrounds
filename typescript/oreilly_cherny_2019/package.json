@@ -9,5 +9,7 @@
         "tslint": "^5.18.0",
         "typescript": "^3.7.5"
     },
-    "scripts": {}
+    "scripts": {
+        "ts": "ts-node"
+    }
 }

@@ -222,7 +222,7 @@
     }
 
     function flip(f: Flippable) {
-        return "flipped it";
+        return `flipped it ${f}`;
     }
 
     console.log(flip(Flippable.Chair)); // 'flipped it'
@@ -240,7 +240,7 @@
     }
 
     function flip(f: Flippable) {
-        return "flipped it";
+        return `flipped it ${f}`;
     }
 
     console.log(flip(Flippable.Chair));
