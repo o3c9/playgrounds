@@ -1,5 +1,5 @@
 {
-    "name": "ch4",
+    "name": "typescript-lesson",
     "version": "1.0.0",
     "main": "index.js",
     "license": "MIT",
@@ -9,7 +9,5 @@
         "tslint": "^5.18.0",
         "typescript": "^3.7.5"
     },
-    "scripts": {
-        "main": "ts-node src/index.ts"
-    }
+    "scripts": {}
 }
