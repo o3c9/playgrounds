@@ -10,6 +10,7 @@
         "typescript": "^3.7.5"
     },
     "scripts": {
-        "ts": "ts-node"
+        "ts": "ts-node",
+        "lint:fix": "tslint -c tslint.json --fix src/**/*.ts"
     }
 }
