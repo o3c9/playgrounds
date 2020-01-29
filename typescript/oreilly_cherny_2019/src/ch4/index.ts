@@ -122,7 +122,7 @@
         }
     };
     // In this case, since the function is given to `times`, TypeScript can infer the type of parameter `n`
-    times(n => n * 2, 4);
+    times((n) => n * 2, 4);
 }
 
 // Full call signature and overloading functions
