@@ -49,8 +49,9 @@
 
 // objectに生えたthisについては、`strict: true`では、typeを強制されない
 {
-    type A = { name: string };
-    const a = {
+    type A = { name: string; say: () => string };
+    type B = { phone: string };
+    const a: A = {
         name: "Adam",
         say() {
             return `hello, I'm ${this.name}`;
@@ -67,6 +68,10 @@
         return `hello, I'm ${this.name}`;
     };
     console.log(say.call(a));
+
+    const b: B = { phone: "000-1111-2222" };
+    // error
+    // console.log(say.call(b));
 }
 
 // generators

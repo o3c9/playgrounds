@@ -87,6 +87,14 @@
     obj3.a = 30;
     // error
     // obj3.id = 3;
+
+    // class and objects
+    let c: { first: string; last: string };
+    class Person {
+        constructor(public first: string, public last: string) {}
+    }
+    c = new Person("tom", "h");
+    console.log("my name is", c.first, c.last);
 }
 
 {
@@ -145,7 +153,8 @@
 
 {
     const ids: number[] = [1, 2, 3];
-    const identifiers: Array<string | number> = [1, "a"];
+    const identifiers: (string | number)[] = [1, "a"];
+    // const identifiers: Array<string | number> = [1, "a"];
 }
 
 {
@@ -170,6 +179,8 @@
     const friends: [string, ...string[]] = ["Sara", "Tali", "Chloe", "Claire"];
     // A heterogeneous list
     const list: [number, boolean, ...string[]] = [1, false, "a", "b", "c"];
+
+    const fares: Array<[number, number?]> = [[1], [2, 3], [4]];
 }
 
 // readonly arrays and tuples
@@ -179,6 +190,10 @@
     // ids.push(4);
     // ids.pop();
     // ids[0] = 4;
+
+    const a1: readonly string[] = ["john", "paul"];
+    const a2: Readonly<string[]> = ["john", "paul"];
+    const a3: ReadonlyArray<string> = ["john", "paul"];
 
     const pair: readonly [number, string] = [1, "tom"];
     // pair[1] = "jane";
@@ -248,4 +263,10 @@
     // error
     // flip(12);
     // flip("Hat");
+}
+
+{
+    // Exercise
+    let a = [true, false, true];
+    let e = { type: "focus" };
 }
