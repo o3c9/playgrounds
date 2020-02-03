@@ -1,3 +1,5 @@
+import { title } from "../util";
+
 {
     const add = (a: number, b: number) => a + b;
     console.log(add(2, 5));
@@ -77,6 +79,8 @@
 // generators
 // genFib() returns IterableIterator<number>
 {
+    title("generatros");
+
     function* genFib() {
         let a = 0;
         let b = 1;
@@ -87,12 +91,15 @@
     }
     const fib = genFib();
     for (let i = 0; i < 10; i++) {
-        console.log(fib.next().value);
+        // yieldは、`{value: number, done: boolean}`というオブジェクトを返す
+        console.log(fib.next());
     }
 }
 
 // iterators
 {
+    title("iterators");
+
     const evens = {
         *[Symbol.iterator]() {
             for (let i = 0; i < 20; i += 2) {
@@ -100,6 +107,7 @@
             }
         },
     };
+    // iteratorは、`{value: number, done: boolean}`というプロトコルに従って、for...ofループを回す
     for (const a of evens) {
         console.log(a);
     }
@@ -107,6 +115,8 @@
 
 // call signature and function implementation
 {
+    title("call signature and function implementation");
+
     type Log = (message: string, userId?: string) => void;
 
     const log: Log = (message, userId = "guest") => {
@@ -131,3 +141,31 @@
 }
 
 // Full call signature and overloading functions
+{
+    type Reservation = { Id: string };
+    type ReserveFn = (from: Date, to: Date, destination: string) => Reservation;
+
+    // overloadするときには、こちらの関数の型定義の方法が便利 (overloadがないときは、上のシンタックスにしないとエラーになる)
+    type ReserveFnFull = {
+        (from: Date, to: Date, destination: string): Reservation;
+        (from: Date, destination: string): Reservation;
+    };
+
+    // ただしoverloadを実装するときには、overloadされた定義の全てを満たすように関数のsignatureを定義する必要がある
+    // このcombineされた型定義は利用者からは見えないので安心して
+    const rsv: ReserveFnFull = (
+        from: Date,
+        to: Date | string,
+        destination?: string
+    ) => {
+        return {
+            Id: `xxx-${from.toString()}`,
+        };
+    };
+
+    console.log(rsv(new Date(2018, 7, 27, 9, 0, 0), "Hong-Kong"));
+}
+
+{
+    title("generics");
+}
