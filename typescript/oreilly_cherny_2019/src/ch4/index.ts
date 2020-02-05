@@ -168,4 +168,70 @@ import { title } from "../util";
 
 {
     title("generics");
+
+    type Filter = <T>(ar: T[], f: (i: T) => boolean) => T[];
+    type Filter2<T> = (ar: T[], f: (i: T) => boolean) => T[];
+
+    function filter<T>(ar: T[], f: (i: T) => boolean): T[] {
+        return ar;
+    }
+
+    // OK
+    const promise = new Promise<number>((resolve) => resolve(45));
+    promise.then((result) => result * 4);
+}
+
+{
+    title("generics and type alias");
+
+    type MyEvent<T> = {
+        target: T;
+        type: string;
+    };
+
+    type TimedEvent<T> = {
+        event: MyEvent<T>;
+        time: Date;
+    };
+
+    type triggerEvent<T> = (e: MyEvent<T>) => void;
+}
+
+{
+    title("Bounded Polymorphism");
+
+    // ここではB-Treeの実装を試みる
+    type TreeNode = { val: string };
+    type LeafNode = TreeNode & { isLeaf: true };
+    type InnerNode = TreeNode & { children: [TreeNode] | [TreeNode, TreeNode] };
+
+    // さて、nodeのvalueを変更するmapNodeを実装する
+    // イメージ:
+    //   mapNode(t: TreeNode, _ => _.upperCase()) // TreeNode
+    //   mapNode(t: LeafNode, _ => _.upperCase()) // LeafNode
+    //   mapNode(t: TreeNode, _ => _.upperCase()) // InnerNode
+    //
+    // ここで mapNode<T>(t: T) としたいが、このTは、TreeNodeでなくてはならないという束縛をつけたい
+    // これが、Bounded polymorphismだ
+
+    function mapNode<T extends TreeNode>(
+        node: T,
+        f: (val: string) => string
+    ): T {
+        return { ...node, val: f(node.val) };
+    }
+}
+
+{
+    title("exercises");
+
+    function is<T extends unknown[]>(...args: T): boolean {
+        return args.every((e) => args[0] === e);
+    }
+
+    console.log(is("string", "otherstring"));
+    console.log(is(true, false));
+    console.log(is(42, 42));
+    // console.log(is(10, "foo"));
+    console.log(is([1], [1, 2], [1, 2, 3]));
 }
