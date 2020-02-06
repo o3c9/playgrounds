@@ -230,3 +230,93 @@ import { title } from "../util";
         }
     }
 }
+
+{
+    title("polymorphism / generics");
+
+    class Multiplier<K> {
+        constructor(private ins: K) {}
+
+        public run(n: number) {
+            let ar: K[] = [];
+            for (let i = 0; i < n; i++) {
+                ar.push(this.ins);
+            }
+            return ar;
+        }
+    }
+
+    console.log(new Multiplier<string>("a").run(2));
+}
+
+{
+    title("mixins");
+
+    // TS版Mixinのつくりかた
+    // 1. まずクラスのコンストラクタの型を定義する
+    type ClassContructor<T> = new (...args: any[]) => T;
+
+    // 2. クラスを受け取り、ある属性やメソッドを追加したクラスを返す関数を定義する
+    function withEZDebug<C extends ClassContructor<{ inspect(): any }>>(
+        klass: C
+    ) {
+        // returns anonymous class contructor
+        return class extends klass {
+            // このように通常のコンストラクタの挙動なら宣言不要
+            constructor(...args: any[]) {
+                super(...args);
+            }
+
+            // ここにmixinがもつ固有のメソッドを実装
+            public debug() {
+                const name = this.constructor.name;
+                const val = this.inspect();
+                return { name, val };
+            }
+        };
+    }
+
+    class User {
+        constructor(
+            private id: number,
+            private firstName: string,
+            private lastName: string
+        ) {}
+
+        public inspect() {
+            return {
+                firstName: this.firstName,
+                id: this.id,
+                lastName: this.lastName,
+            };
+        }
+    }
+
+    // `{ inspect(): any }`を満たしていれば、`withEZDebug`を使って、debug()メソッドをはやせる
+    const u = new (withEZDebug(User))(3, "emma", "goldman");
+    console.log(u.debug());
+
+    title("decorators");
+
+    @withEZDebug
+    class DecoratedUser extends User {}
+
+    // 現時点では、Typescriptは、decoratorがclassのshapeを変えたことを気づけないので、`debug()`がコンパイルエラー
+    // console.log(new DecoratedUser(3, "emma", "goldman").debug());
+}
+
+{
+    title("simulating final class");
+
+    // クラスを派生させないようにするには、privateコンストラクタを使用する
+    class MessageQueue {
+        // ただしもちろんこれでは自分自身のインスタンスも作れなくなるので、代わりにfactoryメソッドを用意する
+        public static create(msg: string): MessageQueue {
+            return new MessageQueue(msg);
+        }
+
+        private constructor(private msg: string) {}
+    }
+    // class BadQueue extends MessageQueue {} // Error TS2675: Cannot extend a class
+    MessageQueue.create("hello");
+}
