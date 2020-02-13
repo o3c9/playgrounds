@@ -320,3 +320,188 @@ import { title } from "../util";
     // class BadQueue extends MessageQueue {} // Error TS2675: Cannot extend a class
     MessageQueue.create("hello");
 }
+
+{
+    title("design patterns - factory");
+
+    type Shoe = { purpose: string };
+
+    // interfaceとtypeは交換可能なので、typeもimplementsできる
+    class BalletFlat implements Shoe {
+        // 型はShoeで定義されているので省略可能
+        public purpose = "dancing";
+    }
+    class Boot implements Shoe {
+        public purpose = "woodcutting";
+    }
+    class Sneaker implements Shoe {
+        public purpose = "walking";
+    }
+
+    const Shoe = {
+        create(type: "ballet" | "boot" | "sneaker"): Shoe {
+            switch (type) {
+                case "ballet":
+                    return new BalletFlat();
+                case "boot":
+                    return new Boot();
+                case "sneaker":
+                    return new Sneaker();
+            }
+        },
+    };
+    const shoe = Shoe.create("ballet");
+    console.log(shoe);
+
+    {
+        title("improved factory pattern");
+
+        type ShoeFactory = {
+            (type: "ballet"): BalletFlat;
+            (type: "boot"): Boot;
+            (type: "sneaker"): Sneaker;
+        };
+
+        const shoe2Create: ShoeFactory = (
+            type: "ballet" | "boot" | "sneaker"
+        ) => {
+            switch (type) {
+                case "ballet":
+                    return new BalletFlat();
+                case "boot":
+                    return new Boot();
+                case "sneaker":
+                    return new Sneaker();
+            }
+        };
+        const shoe2 = shoe2Create("ballet");
+        console.log(shoe2);
+    }
+}
+
+{
+    title("design patterns - builder");
+
+    class RequestBuilder {
+        private url: string | null = null;
+        private method: string | null = null;
+
+        public setURL(url: string) {
+            this.url = url;
+            return this;
+        }
+
+        public setMethod(method: string) {
+            this.method = method;
+            return this;
+        }
+
+        public send() {
+            console.log(`go!:`, this);
+        }
+    }
+
+    new RequestBuilder()
+        .setURL("http://example.com")
+        .setMethod("POST")
+        .send();
+
+    // ただしこのtraditionalなbuilderパターンはurlをセットする前にsendが呼べるので安全ではない
+}
+
+{
+    title("protected constructor");
+
+    class OurClass {
+        protected constructor(protected name: string) {}
+        public hello() {
+            return `Hello, ${this.name}`;
+        }
+    }
+
+    // new OurClass("black"); // TS2674 error
+    class CatClass extends OurClass {
+        public constructor(protected name: string) {
+            super(name);
+        }
+
+        public hello() {
+            return `Meow, ${this.name}`;
+        }
+    }
+
+    console.log(new CatClass(`white`).hello());
+}
+
+{
+    title("design patterns - type-safe builder");
+
+    type Builder<Props, Result> = ({} extends Props
+        ? { build(): Result }
+        : {}) &
+        { [P in keyof Props]-?: SetFunction<Props, P, Result> };
+
+    type BuildFunction<Props, Result> = (props: Props) => Result;
+
+    type SetFunction<Props, K extends keyof Props, Result> = (
+        value: Exclude<Props[K], undefined>
+    ) => Builder<Pick<Props, Exclude<keyof Props, K>>, Result>;
+
+    const propsObject = Symbol();
+    const buildFunction = Symbol();
+
+    class BuilderImpl<Props, Result> {
+        constructor(bf: BuildFunction<Props, Result>) {
+            return new Proxy(
+                {
+                    [propsObject]: {},
+                    [buildFunction]: bf,
+                },
+                {
+                    get(target: any, prop: any, receiver: any) {
+                        if (prop === "build") {
+                            return () =>
+                                target[buildFunction](target[propsObject]);
+                        } else {
+                            // それ以外はsetter関数
+                            return (value: any) => {
+                                target[propsObject][prop] = value;
+                                return receiver;
+                            };
+                        }
+                    },
+                }
+            );
+        }
+    }
+
+    function builderFactory<Props, Result>(
+        bf: BuildFunction<Props, Result>
+    ): new () => Builder<Props, Result> {
+        return class {
+            constructor() {
+                return new BuilderImpl(bf);
+            }
+        } as any;
+    }
+
+    const RequestBuilder = builderFactory<
+        {
+            url: string;
+            method: string;
+            data: any;
+        },
+        string
+    >(
+        ({ url, method, data }) =>
+            `url = ${url}, method = ${method}, data = ${JSON.stringify(data)}`
+    );
+
+    const req = new RequestBuilder()
+        .data({ a: "b" })
+        .url("http://example.com")
+        .method("POST")
+        .build();
+
+    console.log(req);
+}
