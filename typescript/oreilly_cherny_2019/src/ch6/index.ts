@@ -224,3 +224,219 @@ import { title } from "../util";
 
     // Record Type acutally uses this mapped types background
 }
+
+{
+    title("Companion Object Pattern");
+    // 型であると同時にObjectでもある．これによってclassのstaticメソッドのようなことができる
+
+    type Unit = "EUR" | "GBP" | "JPY" | "USD";
+
+    type Currency = {
+        unit: Unit;
+        value: number;
+    };
+
+    // Textにあるような
+    //
+    // let Currency = {
+    //     DEFAULT: "USD",
+    //     from(value: number, unit = Currency.DEFAULT): Currency {
+    //         return { unit, value };
+    //     },
+    // };
+    // だとnoImplicitAnyにひっかかってしまう
+
+    const Currency = {
+        from(value: number, unit: Currency["unit"] = "USD"): Currency {
+            return { unit, value };
+        },
+    };
+
+    const usd = Currency.from(10);
+    console.log(`${usd.value} ${usd.unit}`);
+}
+
+{
+    title("type inference for tuples");
+
+    // tupleはarrayなので，長さも自由だし，ポジションごとの型も自由
+    let a = [1, true]; // (number|boolean)[]
+    a[0] = false; // ok
+    a[2] = 3;
+
+    // 厳格にするには，こうした関数を使って型をはめてしまう
+    function tuple<T extends unknown[]>(...ts: T): T {
+        return ts;
+    }
+    let b = tuple(1, true);
+    // b[0] = false; // ng
+    // b[2] = 3; // ng
+}
+
+{
+    title("User-Defined Type Guards");
+
+    // typeof を同じスコープで使うと，refinementがきく
+    function parseInput(arg: string | number): number {
+        if (typeof arg === "string") {
+            return parseInt(arg, 10);
+        } else {
+            return arg;
+        }
+    }
+
+    // typeof を別スコープで使うと，refinementがきかなくなる
+    function isString_B(arg: unknown) {
+        return typeof arg === "string";
+    }
+
+    // エラー
+    // function parseInput_NG(arg: string | number): number {
+    //     if (isString_B(arg)) {
+    //         return parseInt(arg, 10);
+    //     } else {
+    //         return arg;
+    //     }
+    //
+
+    // そこでuser-defined guardをつかう
+    function isString(arg: unknown): arg is string {
+        return typeof arg === "string";
+    }
+    function parseInput_Guard(arg: string | number): number {
+        if (isString(arg)) {
+            return parseInt(arg, 10);
+        } else {
+            return arg;
+        }
+    }
+}
+
+{
+    title("Conditional Types");
+
+    type IsString<T> = T extends string ? 1 : 0;
+
+    type One = IsString<string>; // One: 1
+    type Zero = IsString<number>; // One: 0
+
+    type ToArray<T> = T[];
+    type strings = ToArray<string>; // string[]
+    type ns = ToArray<string | number>; // (string|number)[]
+
+    // 条件付きTypeの分配法則を利用すると，Tがunionだった場合に，個別の型ごとに分解される
+    // `(string|number)[]`
+    // ではなく，
+    // `string[] | number[]`
+    // が定義できる
+    type ToArrayDistribute<T> = T extends unknown ? T[] : T[];
+    type ns2 = ToArrayDistribute<string | number>; // (string[] | number[])
+}
+
+{
+    title("infer keyword");
+
+    // Type Conditionの中でその他の情報から型推論を行い，型変数に入れる
+
+    // 与えられた関数の最初の引数の型を返す
+    type FuncFirstArg<F> = F extends (a: infer A) => any ? A : never;
+    type F1 = FuncFirstArg<typeof Array["prototype"]["splice"]>; // number
+}
+
+{
+    title("Builtin Conditional Types");
+
+    type Day = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";
+    type Weekend = "Sat" | "Sun";
+    type WeekDay = Exclude<Day, Weekend>;
+
+    // const d: WeekDay = "Sat";// NG
+
+    // Extract
+    type T01 = Extract<"a" | "b" | "c" | "d", "a" | "c" | "f">; // "a" | "c"
+
+    // NotNullable
+    type T04 = NonNullable<string | number | undefined>; // string | number
+    type T05 = NonNullable<(() => string) | string[] | null | undefined>; // (() => string) | string[]
+
+    // ReturnType
+    type T12 = ReturnType<<T>() => T>; // {}
+
+    // InstanceType
+    class C {}
+    type T20 = InstanceType<typeof C>; // C
+}
+
+{
+    title("excape hatches");
+
+    // as または <T>a を使うことで型を矯正させることができるが，なるべく使わないこと
+    // !をつかうことで，Not-nullであることを宣言できるが，これは，そもそも元の型に`|null`がついているのを外すことを考慮すべきかも
+}
+
+{
+    title("type branding");
+    // Nominal typesをsimulate する
+
+    type UserID = string;
+    type OrderID = string;
+
+    function fetchUser(id: UserID) {
+        console.log(id);
+    }
+
+    const order: OrderID = "order-123";
+    fetchUser(order); // !!!!
+
+    // UserId型にOrderId型を紛れさせないようにするには，
+
+    type UserID2 = string & { readonly brand: unique symbol };
+    type OrderID2 = string & { readonly brand: unique symbol };
+
+    function fetchUser2(id: UserID2) {
+        console.log(id);
+    }
+
+    function OrderID2(id: string) {
+        return id as OrderID2;
+    }
+
+    const order2: OrderID2 = OrderID2("order-123");
+    // fetchUser2(order2); // Error
+}
+
+{
+    title("exercises 6");
+
+    // ok
+    const l1: 1 = 1;
+    const r1: number = l1;
+
+    // ng
+    const l2: number = 1;
+    // const r2: 1 = l2;
+
+    // const a4: number = true;
+
+    const l7: { a: true } = { a: true };
+    const r7: { a: boolean } = l7;
+
+    const l8: { a: { b: [string] } } = { a: { b: ["hi"] } };
+    const r8: { a: { b: [number | string] } } = l8;
+
+    // OK 関数の引数に関しては，contravariantなので，広い型を持つ方を狭い方に入れることができる
+    const l11: (a: number | string) => string = a => "a";
+    const r11: (a: string) => string = l11;
+    console.log(r11("hi"));
+
+    type O = { a: { b: { c: string } } };
+    type K_O = keyof O; // "a"
+    type K_O_A = keyof O["a"]; // "b"
+    type K_O_A_B = keyof O["a"]["b"]; // "c"
+
+    type Exclusive<T, U> =
+        | (T extends U ? never : T)
+        | (U extends T ? never : U);
+
+    type TEx = Exclusive<1 | 2 | 3, 2 | 3 | 4>;
+}
