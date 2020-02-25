@@ -56,3 +56,9 @@ import { title } from "../util";
 {
     title("async await");
 }
+
+{
+    title("multithreading with Web Workers");
+
+    // see webworker dir
+}
