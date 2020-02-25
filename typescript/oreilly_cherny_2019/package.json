@@ -12,6 +12,7 @@
     "scripts": {
         "ts": "ts-node",
         "build": "tsc",
-        "lint:fix": "tslint -c tslint.json --fix src/**/*.ts"
+        "lint:fix": "tslint -c tslint.json --fix src/**/*.ts",
+        "ch8:webworker": "tsc -p src/ch8/webworker/ && tsc -p src/ch8/webworker/worker"
     }
 }

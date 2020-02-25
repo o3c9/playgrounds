@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "es2015",
+            "webworker",
+        ],
+        "module": "commonjs",
+        "outDir": "../dist",
+        "sourceMap": true,
+        "strict": true,
+        "target": "esnext",
+        "keyofStringsOnly": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "experimentalDecorators": true,
+    },
+    "include": [
+        "worker.ts"
+    ]
+}
