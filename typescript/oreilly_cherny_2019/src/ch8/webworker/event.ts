@@ -38,8 +38,8 @@ export type Commands = {
 };
 
 export type Events = {
-    receivedMessage: (t: ThreadID, u: UserID, m: Message) => void;
+    receiveddMessage: (t: ThreadID, u: UserID, m: Message) => void;
     createdThread: (t: ThreadID, ps: Participants) => void;
     addedUserToThread: (t: ThreadID, u: UserID) => void;
-    removedUserFromTHread: (t: ThreadID, u: UserID) => void;
+    removeUserFromThread: (t: ThreadID, u: UserID) => void;
 };
