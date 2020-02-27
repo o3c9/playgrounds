@@ -62,3 +62,29 @@ import { title } from "../util";
 
     // see webworker dir
 }
+
+import { readFile } from "fs";
+
+{
+    title("promisify");
+
+    function promisify<T>(
+        func: (arg: any, callback: (error: unknown, data: T) => void) => void
+    ) {
+        return (arg: unknown) => {
+            return new Promise<T>((resolve, reject) => {
+                func(arg, (error, data) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(data);
+                    }
+                });
+            });
+        };
+    }
+
+    promisify<Buffer>(readFile)("src/util.ts")
+        .then(r => console.log("success", r.toString()))
+        .catch(e => console.error("failure", e.message));
+}
