@@ -22,6 +22,12 @@ import { title } from "../../util";
             });
         }
 
+        public static reject<T>(err: any): MyPromise<T> {
+            return new MyPromise<T>((_, reject) => {
+                reject(err);
+            });
+        }
+
         private status: PromiseStatus;
         private value?: T = undefined;
         private thenCallbacks: Array<ThenCallback<T>> = [];
@@ -35,7 +41,10 @@ import { title } from "../../util";
             ) => void
         ) {
             this.status = "pending";
-            action(this.resolve.bind(this), this.reject.bind(this));
+            setTimeout(
+                () => action(this.resolve.bind(this), this.reject.bind(this)),
+                0
+            );
         }
 
         public then(
