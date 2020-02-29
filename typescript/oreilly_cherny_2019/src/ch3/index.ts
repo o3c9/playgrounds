@@ -153,7 +153,7 @@
 
 {
     const ids: number[] = [1, 2, 3];
-    const identifiers: (string | number)[] = [1, "a"];
+    const identifiers: Array<string | number> = [1, "a"];
     // const identifiers: Array<string | number> = [1, "a"];
 }
 
@@ -267,6 +267,6 @@
 
 {
     // Exercise
-    let a = [true, false, true];
-    let e = { type: "focus" };
+    const a = [true, false, true];
+    const e = { type: "focus" };
 }

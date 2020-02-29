@@ -238,7 +238,7 @@ import { title } from "../util";
         constructor(private ins: K) {}
 
         public run(n: number) {
-            let ar: K[] = [];
+            const ar: K[] = [];
             for (let i = 0; i < n; i++) {
                 ar.push(this.ins);
             }

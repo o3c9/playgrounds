@@ -90,13 +90,13 @@ import { title } from "../util";
     // constの場合は，type-wideningされない
     const a = "s"; // a: "s"
 
-    let b = "s"; // b: string
+    const b = "s"; // b: string
     // type-wideningを避けるには，型を明示的に宣言する
-    let c: "s" = "s"; // c: "s"
+    const c: "s" = "s"; // c: "s"
 
     // nullやundefinedは，anyへと拡張される
     // ただし，同じscope内で別の値が代入された場合には，その値を利用する
-    let n = null; // n:any
+    const n = null; // n:any
 }
 
 {
@@ -260,7 +260,7 @@ import { title } from "../util";
     title("type inference for tuples");
 
     // tupleはarrayなので，長さも自由だし，ポジションごとの型も自由
-    let a = [1, true]; // (number|boolean)[]
+    const a = [1, true]; // (number|boolean)[]
     a[0] = false; // ok
     a[2] = 3;
 
@@ -268,7 +268,7 @@ import { title } from "../util";
     function tuple<T extends unknown[]>(...ts: T): T {
         return ts;
     }
-    let b = tuple(1, true);
+    const b = tuple(1, true);
     // b[0] = false; // ng
     // b[2] = 3; // ng
 }
