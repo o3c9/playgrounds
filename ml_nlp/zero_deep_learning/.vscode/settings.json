@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/usr/local/bin/python3"
+    "python.pythonPath": "/opt/conda/bin/python",
+    "python.dataScience.jupyterServerURI": "http://916b3160aeb5:8888/"
 }
