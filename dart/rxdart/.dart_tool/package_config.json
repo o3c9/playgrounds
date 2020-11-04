@@ -1,0 +1,19 @@
+{
+  "configVersion": 2,
+  "packages": [
+    {
+      "name": "rxdart",
+      "rootUri": "file:///Users/tomoya-hirano/.pub-cache/hosted/pub.dartlang.org/rxdart-0.24.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.6"
+    },
+    {
+      "name": "rxdart_learn",
+      "rootUri": "../",
+      "packageUri": "lib/"
+    }
+  ],
+  "generated": "2020-11-04T09:32:04.694696Z",
+  "generator": "pub",
+  "generatorVersion": "2.9.0-14.1.beta"
+}
