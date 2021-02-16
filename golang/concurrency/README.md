@@ -69,7 +69,7 @@ One of Go's motto: Share memory by communicating, don't communicate by sharing m
 
 Aim for simplicity, use channels when possible, and treat goroutines like a free resource.
 
-### Chapter 3.
+### Chapter 3
 
 #### goroutines
 
@@ -119,7 +119,7 @@ wg.Wait()
 これの結果は，"Greeting" x 3になる．これは，coroutine実行時には，m変数には，"Greeting"がはいっているからだ．
 ただしくは，mのコピーをクロージャに渡してやる必要がある
 
-```
+```go
 var wg sync.WaitGroup
 for _, m := range []string{"Hello", "Good day", "Greeting"} {
   wg.Add(1)
@@ -133,4 +133,29 @@ wg.Wait()
 
 Goroutineが作成されると，ランタイムからは数キロバイトほどのメモリーが与えられる．このため，通常は何千個というGoroutineを作っても安全である．また，メモリーが足りない場合には，ランタイムから自動的に追加される．
 
+
+### sync パッケージ
+
+syncには，低レベルのメモリアクセスを同期するために必要な道具がはいっている．
+
+#### WaitGroup
+
+結果を受け取らない，または戻り値以外の方法で結果を受け取れるような，並列タスクの完了を待つために利用される．
+（そうでない場合は，channel + select を利用する）
+
+`Add`を，goroutineの外側で呼ぶ必要があることに注意 :notice:
+
+```go
+var wg sync.WaitGroup
+wg.Add(1)
+go func(message string) {
+  defer wg.Done()
+  fmt.Println(message)
+}(m)
+wg.Wait()
+```
+
+### Mutex, RWMutex
+
+Mutexは，共有リソースに排他アクセスするのに用いられる．
 
