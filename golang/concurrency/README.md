@@ -159,3 +159,34 @@ wg.Wait()
 
 Mutexは，共有リソースに排他アクセスするのに用いられる．
 
+```go
+func() {
+  lock.Lock()
+  defer lock.Unlock()
+  // ready or modify shared resources
+}
+```
+
+RWMutexは，read用なのかwrite用なのかを宣言でき，いくらread lockがかかっていても，write lockがなければ，lockを得ることができる
+
+lockはパフォーマンスに影響が出るため，RWMutexを使えるならこちらを使ったほうがよい
+
+### Cond
+
+Condとは，複数のgoroutinesの待ち合わせ場所で，なにかしらのイベントが起こるのを確認するまで待つ必要があり，その確認は繰り返し行う必要がある場合に，シンプルに書けるためのツール
+
+https://lestrrat.medium.com/sync-cond-%E3%82%B3%E3%83%B3%E3%83%87%E3%82%A3%E3%82%B7%E3%83%A7%E3%83%B3%E5%A4%89%E6%95%B0%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%81%AE%E8%A7%A3%E8%AA%AC-dd2050cdfab7
+
+### Once
+
+複数のgoroutineから呼ばれる可能性はあるが，必ず一回しか呼ばれないことを保証したいときに，`once.Do`で関数をwrapする
+
+### Pool
+
+データベースコネクションのような生成コストが高いオブジェクトをPoolしておくためのパターン．
+
+### Channels
+
+channelに値を渡すと，プログラムの別の箇所で，そのchannelから，値を読み出すことができる
+
+
