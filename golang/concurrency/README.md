@@ -59,5 +59,78 @@ goが提供するやり方に従えば良い．
 たとえばHTTPサーバーをつくるときに，ある言語では，コネクションを受け取るためのThread Poolを事前につくっておき，そのスレッドをLoopさせて，リクエストを処理させるような仕組みになっている．
 しかし，goでは，関数の前に`go`キーワードを書くだけで，あとは勝手にやってくれる
 
+## Chapter 2. Modeling Your Code: Communicating Sequential Processes
+
+CSP - Goの並列処理の実装のもととなった考え方
+
+Go Routineは，OSスレッドへとGoランタイムによってマップされるが，そのスケジューリングはすべてランタイムで吸収してくれる．
+
+One of Go's motto: Share memory by communicating, don't communicate by sharing memory
+
+Aim for simplicity, use channels when possible, and treat goroutines like a free resource.
+
+### Chapter 3.
+
+#### goroutines
+
+端的に言えば，並列実行可能な関数のこと. Goランタイム上で実現されており，ノンプリエンプティブである - つまりノンプリエンプティブなスケジューリング方式とは、1つのタスクが実行し終えたら次の順番のタスクというように順次実行していく様子を表しています。
+
+```go
+go func() {
+  fmt.Println("hello")
+}()  // created from anonymous function
+```
+
+goroutinesのサスペンドや再開などの処理は，Goのランタイムで自動的に制御されている．
+
+M:Nスケジューラー = M個のGreen Threadを，N個のOS Threadにマッピングする．
+Go Routineは，Green Thread上で実行される．
+
+Goでは，Fork-joinモデルが採用されている．
+プログラム実行のある時点で，childブランチを発生させ，ある時点でjoin backさせる．
+
+```go
+var wg sync.WaitGroup
+hello := func() {
+  defer wg.Done()
+  fmt.Println("Hello!")
+}
+wg.Add(1)
+go hello()
+wg.Wait()
+```
+
+`wg.Wait()`で，main関数の実行を，hello coroutine 終了まで停止させる
+
+#### goroutineとスコープ
+
+```go
+var wg sync.WaitGroup
+for _, m := range []string{"Hello", "Good day", "Greeting"} {
+  wg.Add(1)
+  go func() {
+    defer wg.Done()
+    fmt.Println(m)
+  }()
+}
+wg.Wait()
+```
+
+これの結果は，"Greeting" x 3になる．これは，coroutine実行時には，m変数には，"Greeting"がはいっているからだ．
+ただしくは，mのコピーをクロージャに渡してやる必要がある
+
+```
+var wg sync.WaitGroup
+for _, m := range []string{"Hello", "Good day", "Greeting"} {
+  wg.Add(1)
+  go func(message string) {
+    defer wg.Done()
+    fmt.Println(message)
+  }(m)
+}
+wg.Wait()
+```
+
+Goroutineが作成されると，ランタイムからは数キロバイトほどのメモリーが与えられる．このため，通常は何千個というGoroutineを作っても安全である．また，メモリーが足りない場合には，ランタイムから自動的に追加される．
 
 
