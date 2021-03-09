@@ -189,4 +189,13 @@ https://lestrrat.medium.com/sync-cond-%E3%82%B3%E3%83%B3%E3%83%87%E3%82%A3%E3%82
 
 channelに値を渡すと，プログラムの別の箇所で，そのchannelから，値を読み出すことができる
 
+```go
+dataStream := make(chan interface{}) // 双方向
+readStream := make(<-chan interface{}) // read-only
+writeStream := make(chan<- interface{}) // send-only
+```
+
+単一方向のチャンネルを作成することは少ないが，関数のパラメータで明示することはよくある．
+
+channelは型を持つので要注意. int型のchannelに，stringのデータは流せない
 
